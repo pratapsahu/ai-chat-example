@@ -1,5 +1,5 @@
 {
-  "name": "duckbot",
+  "name": "chatbot",
   "version": "1.0.0",
   "description": "chat bot using brain js",
   "main": "index.js",
