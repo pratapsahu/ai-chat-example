@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Chat Bot</title>
+		<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+		<style>
+			body { padding-top: 50px; }
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="panel panel-default">
+				<div class="panel-heading">Conversation here...</div>
+				<div class="panel-body" id="conversationBox"></div>
+			</div>
+			<div class="input-group">
+				<input type="text" class="form-control width100" id="inputMessage" />				
+				<span class="input-group-btn">
+					<button type="button" class="btn btn-default" id="goMessage">Go</button>
+				</span>				
+			</div>
+		</div>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script type="text/javascript">
+			function sendMessage(){
+				var inputMessage = $("#inputMessage").val();				
+				var data = {};
+				
+				$('#conversationBox').append('<div class="text-left">'+inputMessage+'</div><br/>');
+				data.message = inputMessage;
+				
+				$.ajax({
+					type: 'POST',
+					url: '/submit-message',
+					data: data,
+					dataType: 'json',
+					success: function(res){
+						//alert('success');
+						//alert(res);
+						$('#conversationBox').append('<div class="text-right">'+res.replyMessage+'</div>');
+					},
+					complete: function(){
+						//alert('complete');
+					}
+				});
+			}
+			$(document).ready(function(){
+				//alert('ready');
+								
+				$('#goMessage').click(sendMessage);
+				
+				$('#inputMessage').onEnter(sendMessage);
+			});
+			
+			(function($){
+				$.fn.onEnter = function(func){
+					this.bind('keypress', function(e){
+						if(e.keyCode === 13){
+							func.apply(this, [e]);
+						}
+					});
+					return this;
+				};
+			})(jQuery);
+		</script>
+	</body>
+</html>
