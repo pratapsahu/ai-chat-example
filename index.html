@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>Chat Bot</title>
-		<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="./assets/bootstrap.min.css" />
 		<style>
 			body {
 				padding-top: 50px;
@@ -15,13 +15,34 @@
 				display: inline-block;
 				margin-bottom: 5px;
 			}
+			.icon {
+				width: 36px;
+				height: 36px;
+			}
+			.assistant {
+				float:left;
+				background-image: url("./assets/images/assistant.png");
+				margin-right: 5px;
+			}
+			.user {
+				float:right;
+				background-image: url("./assets/images/user.png");
+				margin-left: 5px;
+			}
+			.datetime {
+				color: #333;
+				font-size: 0.625em;
+			}
+			.title {
+				font-size: 1.25em;
+			}
 		</style>
 	</head>
 	<body>
 		<div class="container">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<span>Conversation here...</span>
+					<span class="title">Chatbot Assistance</span>
 					<button type="button" class="btn btn-default" id="clearMessage">Clear</button>
 					<button type="button" class="btn btn-default" id="exportMessage">Export</button>
 				</div>
@@ -44,8 +65,17 @@
 			function sendMessage(){
 				var inputMessage = $("#inputMessage").val();
 				var data = {};
+				var sendDate = new Date().toUTCString();
 
-				$('#conversationBox').append('<div class="text-right"><span class="bubble">'+inputMessage+'</span></div><br/>');
+				$('#conversationBox').append(
+												'<div class="text-right">'
+												+   '<div class="bubble">'												
+												+      '<span>'+inputMessage+'</span>'
+												+      '<span class="icon user"></span>'
+												+   '</div>'
+												+   '<div class="datetime">'+sendDate+'</div>'
+												+'</div>'
+											);
 				data.message = inputMessage;
 
 				$.ajax({
@@ -56,7 +86,16 @@
 					success: function(res){
 						//alert('success');
 						//alert(res);
-						$('#conversationBox').append('<div class="text-left"><span class="bubble">'+res.replyMessage+'</span></div>');
+						var receiveDate = new Date().toUTCString();
+						$('#conversationBox').append(
+														'<div class="text-left">'
+														+   '<div class="bubble">'
+														+      '<span class="icon assistant"></span>'
+														+      '<span>'+res.replyMessage+'</span>'														
+														+   '</div>'
+														+   '<div class="datetime">'+receiveDate+'</div>'
+														+'</div>'
+													);
 						$('#inputMessage').val('');
 					},
 					complete: function(){
@@ -67,13 +106,22 @@
 
 			$(document).ready(function(){
 				//alert('ready');
+				var curDate = new Date().toUTCString();
 				var specialElementHandlers = {
 					'#editor': function(element, renderer){
 						return true;
 					}
 				};
 
-				$('#conversationBox').append('<div class="text-left"><span class="bubble">'+welcomeMessage+'</span></div>');
+				$('#conversationBox').append(
+												'<div class="text-left">'
+												+   '<div class="bubble">'
+												+      '<span class="icon assistant"></span>'
+												+      '<span>'+welcomeMessage+'</span>'
+												+   '</div>'
+												+   '<div class="datetime">'+curDate+'</div>'
+												+'</div>'
+											);
 
 				$('#goMessage').click(sendMessage);
 
