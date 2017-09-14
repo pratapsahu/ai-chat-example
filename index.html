@@ -13,6 +13,7 @@
 				padding: 5px 10px;
 				border-radius: 15px;
 				display: inline-block;
+				margin-bottom: 5px;
 			}
 		</style>
 	</head>
@@ -27,23 +28,26 @@
 				<div class="panel-body" id="conversationBox"></div>
 			</div>
 			<div class="input-group">
-				<input type="text" class="form-control width100" id="inputMessage" />				
+				<input type="text" class="form-control width100" id="inputMessage" />
 				<span class="input-group-btn">
 					<button type="button" class="btn btn-default" id="goMessage">Go</button>
-				</span>				
+				</span>
 			</div>
 		</div>
-		
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<div id="editor"></div>
+
+		<script src="./assets/jquery.min.js"></script>
+		<script src="./assets/jspdf.min.js"></script>
 		<script type="text/javascript">
 			var welcomeMessage = 'Welcome to personal assistance. How may I help you ?';
+
 			function sendMessage(){
-				var inputMessage = $("#inputMessage").val();				
+				var inputMessage = $("#inputMessage").val();
 				var data = {};
-				
+
 				$('#conversationBox').append('<div class="text-right"><span class="bubble">'+inputMessage+'</span></div><br/>');
 				data.message = inputMessage;
-				
+
 				$.ajax({
 					type: 'POST',
 					url: '/submit-message',
@@ -60,22 +64,35 @@
 					}
 				});
 			}
+
 			$(document).ready(function(){
 				//alert('ready');
+				var specialElementHandlers = {
+					'#editor': function(element, renderer){
+						return true;
+					}
+				};
+
 				$('#conversationBox').append('<div class="text-left"><span class="bubble">'+welcomeMessage+'</span></div>');
-				
+
 				$('#goMessage').click(sendMessage);
-				
+
 				$('#inputMessage').onEnter(sendMessage);
-				
+
 				$('#clearMessage').click(function(){
 					$('#conversationBox').html('');
 				});
+
 				$('#exportMessage').click(function(){
 					//Export messages
+					var doc = new jsPDF();
+					doc.fromHTML($('#conversationBox').html(), 15, 15, {
+						'width': 170, 'elementHandlers': specialElementHandlers
+					});
+					doc.save('conversations.pdf');
 				});
 			});
-			
+
 			(function($){
 				$.fn.onEnter = function(func){
 					this.bind('keypress', function(e){

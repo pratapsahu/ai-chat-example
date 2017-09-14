@@ -25,6 +25,14 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
+app.get('/assets/jquery.min.js', function (req, res) {
+  res.sendFile(path.join(__dirname + '/assets/jquery.min.js'));
+});
+
+app.get('/assets/jspdf.min.js', function (req, res) {
+  res.sendFile(path.join(__dirname + '/assets/jspdf.min.js'));
+});
+
 app.post('/submit-message', function(req, res){
 	type = classifier.classify(req.body.message);
 	res.json({inputMessage:req.body.message, replyMessage:replies[type]});
